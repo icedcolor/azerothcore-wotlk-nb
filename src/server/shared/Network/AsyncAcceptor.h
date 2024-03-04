@@ -27,7 +27,11 @@
 
 using boost::asio::ip::tcp;
 
-constexpr auto ACORE_MAX_LISTEN_CONNECTIONS = boost::asio::socket_base::max_listen_connections;
+#if BOOST_VERSION >= 106600
+#define ACORE_MAX_LISTEN_CONNECTIONS boost::asio::socket_base::max_listen_connections
+#else
+#define ACORE_MAX_LISTEN_CONNECTIONS boost::asio::socket_base::max_connections
+#endif
 
 class AsyncAcceptor
 {
@@ -36,7 +40,7 @@ public:
 
     AsyncAcceptor(Acore::Asio::IoContext& ioContext, std::string const& bindIp, uint16 port) :
         _acceptor(ioContext), _endpoint(Acore::Net::make_address(bindIp), port),
-        _socket(ioContext), _closed(false), _socketFactory([this](){ return DefaultSocketFactory(); })
+        _socket(ioContext), _closed(false), _socketFactory(std::bind(&AsyncAcceptor::DefeaultSocketFactory, this))
     {
     }
 
@@ -118,7 +122,7 @@ public:
     void SetSocketFactory(std::function<std::pair<tcp::socket*, uint32>()> func) { _socketFactory = func; }
 
 private:
-    std::pair<tcp::socket*, uint32> DefaultSocketFactory() { return std::make_pair(&_socket, 0); }
+    std::pair<tcp::socket*, uint32> DefeaultSocketFactory() { return std::make_pair(&_socket, 0); }
 
     tcp::acceptor _acceptor;
     tcp::endpoint _endpoint;
@@ -151,4 +155,4 @@ void AsyncAcceptor::AsyncAccept()
     });
 }
 
-#endif /* __ASYNC ACCEPT_H_ */
+#endif /* __ASYNCACCEPT_H_ */

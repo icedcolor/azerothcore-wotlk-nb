@@ -73,12 +73,12 @@ public:
         return true;
     }
 
-    [[nodiscard]] boost::asio::ip::address GetRemoteIpAddress() const
+    boost::asio::ip::address GetRemoteIpAddress() const
     {
         return _remoteAddress;
     }
 
-    [[nodiscard]] uint16 GetRemotePort() const
+    uint16 GetRemotePort() const
     {
         return _remotePort;
     }
@@ -120,7 +120,7 @@ public:
 #endif
     }
 
-    [[nodiscard]] bool IsOpen() const { return !_closed && !_closing; }
+    bool IsOpen() const { return !_closed && !_closing; }
 
     void CloseSocket()
     {
@@ -146,7 +146,7 @@ protected:
     virtual void OnClose() { }
     virtual void ReadHandler() = 0;
 
-    [[nodiscard]] bool AsyncProcessQueue()
+    bool AsyncProcessQueue()
     {
         if (_isWritingAsync)
             return false;

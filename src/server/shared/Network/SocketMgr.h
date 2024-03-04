@@ -104,9 +104,9 @@ public:
         }
     }
 
-    [[nodiscard]] int32 GetNetworkThreadCount() const { return _threadCount; }
+    int32 GetNetworkThreadCount() const { return _threadCount; }
 
-    [[nodiscard]] uint32 SelectThreadWithMinConnections() const
+    uint32 SelectThreadWithMinConnections() const
     {
         uint32 min = 0;
 
